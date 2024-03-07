@@ -10,6 +10,8 @@ import (
 	"training-ent/ent/group"
 	"training-ent/ent/user"
 
+	"entgo.io/ent/entc"
+	"entgo.io/ent/entc/gen"
 	_ "github.com/lib/pq"
 )
 
@@ -19,6 +21,10 @@ func main() {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
 	defer client.Close()
+
+	if err := entc.Generate("./schema", &gen.Config{}); err != nil {
+		log.Fatalf("failed generating ent client: %v", err)
+	}
 
 	// Run the auto migration tool
 	if err := client.Schema.Create(context.Background()); err != nil {

@@ -16,6 +16,8 @@ const (
 	FieldName = "name"
 	// EdgeUsers holds the string denoting the users edge name in mutations.
 	EdgeUsers = "users"
+	// UserFieldID holds the string denoting the ID field of the User.
+	UserFieldID = "oid"
 	// Table holds the table name of the group in the database.
 	Table = "groups"
 	// UsersTable is the table that holds the users relation/edge. The primary key declared below.
@@ -81,7 +83,7 @@ func ByUsers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 func newUsersStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(UsersInverseTable, FieldID),
+		sqlgraph.To(UsersInverseTable, UserFieldID),
 		sqlgraph.Edge(sqlgraph.M2M, false, UsersTable, UsersPrimaryKey...),
 	)
 }

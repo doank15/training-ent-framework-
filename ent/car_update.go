@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // CarUpdate is the builder for updating Car entities.
@@ -43,6 +44,20 @@ func (cu *CarUpdate) SetNillableModel(s *string) *CarUpdate {
 	return cu
 }
 
+// SetName sets the "name" field.
+func (cu *CarUpdate) SetName(s string) *CarUpdate {
+	cu.mutation.SetName(s)
+	return cu
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (cu *CarUpdate) SetNillableName(s *string) *CarUpdate {
+	if s != nil {
+		cu.SetName(*s)
+	}
+	return cu
+}
+
 // SetRegisteredAt sets the "registered_at" field.
 func (cu *CarUpdate) SetRegisteredAt(t time.Time) *CarUpdate {
 	cu.mutation.SetRegisteredAt(t)
@@ -58,13 +73,13 @@ func (cu *CarUpdate) SetNillableRegisteredAt(t *time.Time) *CarUpdate {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (cu *CarUpdate) SetOwnerID(id int) *CarUpdate {
+func (cu *CarUpdate) SetOwnerID(id uuid.UUID) *CarUpdate {
 	cu.mutation.SetOwnerID(id)
 	return cu
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (cu *CarUpdate) SetNillableOwnerID(id *int) *CarUpdate {
+func (cu *CarUpdate) SetNillableOwnerID(id *uuid.UUID) *CarUpdate {
 	if id != nil {
 		cu = cu.SetOwnerID(*id)
 	}
@@ -126,6 +141,9 @@ func (cu *CarUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := cu.mutation.Model(); ok {
 		_spec.SetField(car.FieldModel, field.TypeString, value)
 	}
+	if value, ok := cu.mutation.Name(); ok {
+		_spec.SetField(car.FieldName, field.TypeString, value)
+	}
 	if value, ok := cu.mutation.RegisteredAt(); ok {
 		_spec.SetField(car.FieldRegisteredAt, field.TypeTime, value)
 	}
@@ -137,7 +155,7 @@ func (cu *CarUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{car.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -150,7 +168,7 @@ func (cu *CarUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{car.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -192,6 +210,20 @@ func (cuo *CarUpdateOne) SetNillableModel(s *string) *CarUpdateOne {
 	return cuo
 }
 
+// SetName sets the "name" field.
+func (cuo *CarUpdateOne) SetName(s string) *CarUpdateOne {
+	cuo.mutation.SetName(s)
+	return cuo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (cuo *CarUpdateOne) SetNillableName(s *string) *CarUpdateOne {
+	if s != nil {
+		cuo.SetName(*s)
+	}
+	return cuo
+}
+
 // SetRegisteredAt sets the "registered_at" field.
 func (cuo *CarUpdateOne) SetRegisteredAt(t time.Time) *CarUpdateOne {
 	cuo.mutation.SetRegisteredAt(t)
@@ -207,13 +239,13 @@ func (cuo *CarUpdateOne) SetNillableRegisteredAt(t *time.Time) *CarUpdateOne {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (cuo *CarUpdateOne) SetOwnerID(id int) *CarUpdateOne {
+func (cuo *CarUpdateOne) SetOwnerID(id uuid.UUID) *CarUpdateOne {
 	cuo.mutation.SetOwnerID(id)
 	return cuo
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (cuo *CarUpdateOne) SetNillableOwnerID(id *int) *CarUpdateOne {
+func (cuo *CarUpdateOne) SetNillableOwnerID(id *uuid.UUID) *CarUpdateOne {
 	if id != nil {
 		cuo = cuo.SetOwnerID(*id)
 	}
@@ -305,6 +337,9 @@ func (cuo *CarUpdateOne) sqlSave(ctx context.Context) (_node *Car, err error) {
 	if value, ok := cuo.mutation.Model(); ok {
 		_spec.SetField(car.FieldModel, field.TypeString, value)
 	}
+	if value, ok := cuo.mutation.Name(); ok {
+		_spec.SetField(car.FieldName, field.TypeString, value)
+	}
 	if value, ok := cuo.mutation.RegisteredAt(); ok {
 		_spec.SetField(car.FieldRegisteredAt, field.TypeTime, value)
 	}
@@ -316,7 +351,7 @@ func (cuo *CarUpdateOne) sqlSave(ctx context.Context) (_node *Car, err error) {
 			Columns: []string{car.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -329,7 +364,7 @@ func (cuo *CarUpdateOne) sqlSave(ctx context.Context) (_node *Car, err error) {
 			Columns: []string{car.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

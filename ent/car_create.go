@@ -12,6 +12,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 )
 
 // CarCreate is the builder for creating a Car entity.
@@ -27,6 +28,12 @@ func (cc *CarCreate) SetModel(s string) *CarCreate {
 	return cc
 }
 
+// SetName sets the "name" field.
+func (cc *CarCreate) SetName(s string) *CarCreate {
+	cc.mutation.SetName(s)
+	return cc
+}
+
 // SetRegisteredAt sets the "registered_at" field.
 func (cc *CarCreate) SetRegisteredAt(t time.Time) *CarCreate {
 	cc.mutation.SetRegisteredAt(t)
@@ -34,13 +41,13 @@ func (cc *CarCreate) SetRegisteredAt(t time.Time) *CarCreate {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (cc *CarCreate) SetOwnerID(id int) *CarCreate {
+func (cc *CarCreate) SetOwnerID(id uuid.UUID) *CarCreate {
 	cc.mutation.SetOwnerID(id)
 	return cc
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (cc *CarCreate) SetNillableOwnerID(id *int) *CarCreate {
+func (cc *CarCreate) SetNillableOwnerID(id *uuid.UUID) *CarCreate {
 	if id != nil {
 		cc = cc.SetOwnerID(*id)
 	}
@@ -89,6 +96,9 @@ func (cc *CarCreate) check() error {
 	if _, ok := cc.mutation.Model(); !ok {
 		return &ValidationError{Name: "model", err: errors.New(`ent: missing required field "Car.model"`)}
 	}
+	if _, ok := cc.mutation.Name(); !ok {
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Car.name"`)}
+	}
 	if _, ok := cc.mutation.RegisteredAt(); !ok {
 		return &ValidationError{Name: "registered_at", err: errors.New(`ent: missing required field "Car.registered_at"`)}
 	}
@@ -122,6 +132,10 @@ func (cc *CarCreate) createSpec() (*Car, *sqlgraph.CreateSpec) {
 		_spec.SetField(car.FieldModel, field.TypeString, value)
 		_node.Model = value
 	}
+	if value, ok := cc.mutation.Name(); ok {
+		_spec.SetField(car.FieldName, field.TypeString, value)
+		_node.Name = value
+	}
 	if value, ok := cc.mutation.RegisteredAt(); ok {
 		_spec.SetField(car.FieldRegisteredAt, field.TypeTime, value)
 		_node.RegisteredAt = value
@@ -134,7 +148,7 @@ func (cc *CarCreate) createSpec() (*Car, *sqlgraph.CreateSpec) {
 			Columns: []string{car.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

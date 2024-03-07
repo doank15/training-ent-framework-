@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"sync"
 	"training-ent/ent/car"
+	"training-ent/ent/card"
 	"training-ent/ent/group"
 	"training-ent/ent/user"
 
@@ -76,6 +77,7 @@ func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			car.Table:   car.ValidColumn,
+			card.Table:  card.ValidColumn,
 			group.Table: group.ValidColumn,
 			user.Table:  user.ValidColumn,
 		})

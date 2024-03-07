@@ -14,10 +14,14 @@ const (
 	FieldID = "id"
 	// FieldModel holds the string denoting the model field in the database.
 	FieldModel = "model"
+	// FieldName holds the string denoting the name field in the database.
+	FieldName = "name"
 	// FieldRegisteredAt holds the string denoting the registered_at field in the database.
 	FieldRegisteredAt = "registered_at"
 	// EdgeOwner holds the string denoting the owner edge name in mutations.
 	EdgeOwner = "owner"
+	// UserFieldID holds the string denoting the ID field of the User.
+	UserFieldID = "oid"
 	// Table holds the table name of the car in the database.
 	Table = "cars"
 	// OwnerTable is the table that holds the owner relation/edge.
@@ -33,6 +37,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldModel,
+	FieldName,
 	FieldRegisteredAt,
 }
 
@@ -70,6 +75,11 @@ func ByModel(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldModel, opts...).ToFunc()
 }
 
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
 // ByRegisteredAt orders the results by the registered_at field.
 func ByRegisteredAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRegisteredAt, opts...).ToFunc()
@@ -84,7 +94,7 @@ func ByOwnerField(field string, opts ...sql.OrderTermOption) OrderOption {
 func newOwnerStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(OwnerInverseTable, FieldID),
+		sqlgraph.To(OwnerInverseTable, UserFieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
 	)
 }
